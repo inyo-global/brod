@@ -1,4 +1,4 @@
-KAFKA_VERSION ?= 4.0.0
+KAFKA_VERSION ?= 3.6.0
 export KAFKA_VERSION
 all: compile
 
@@ -11,9 +11,9 @@ lint:
 test-env:
 	@./scripts/setup-test-env.sh
 	@mkdir -p ./test/data/ssl
-	@cp ./scripts/certs/kafka.keystore.pem ./test/data/ssl/ca.pem
-	@cp ./scripts/certs/kafka.keystore.key ./test/data/ssl/client-key.pem
-	@cp ./scripts/certs/kafka.truststore.pem ./test/data/ssl/client-crt.pem
+	@cp ./scripts/certs/ca.pem ./test/data/ssl/ca.pem
+	@cp ./scripts/certs/client.key ./test/data/ssl/client-key.pem
+	@cp ./scripts/certs/client.pem ./test/data/ssl/client-crt.pem
 
 ut:
 	@rebar3 eunit -v --cover_export_name ut-$(KAFKA_VERSION)

@@ -11,9 +11,8 @@ services:
     container_name: "kafka-1"
     network_mode: host
     volumes:
-      - './certs/kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
-      - './certs/kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
-      - './certs/kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'    
+      - './certs/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './certs/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'    
     environment:
       BROKER_ID: 0
       PLAINTEXT_PORT: 9092
@@ -22,15 +21,18 @@ services:
       SASL_PLAINTEXT_PORT: 9095
       ADVERTISED_HOSTNAME: localhost
       ZOOKEEPER_CONNECT: "localhost:2181"
-      KAFKA_TLS_TYPE: PEM
+      KAFKA_CLIENT_USERS: alice
+      KAFKA_CLIENT_PASSWORDS: ecila
+      KAFKA_TLS_TYPE: JKS
+      KAFKA_CERTIFICATE_PASSWORD: brodtest1234
       KAFKA_KRAFT_CLUSTER_ID: "p8fFEbKGQ22B6M_Da_vCBw"
       KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: controller,broker      
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,SASL_SSL://:9094
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,SASL_SSL://localhost:9094
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SASL_SSL:SASL_SSL
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@localhost:9093,1@localhost:9193
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER      
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,SSL://:9093,SASL_SSL://:9094,CONTROLLER://:9096
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,SSL://localhost:9193,SASL_SSL://localhost:9094
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_SSL:SASL_SSL
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@localhost:9096,1@localhost:9196
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
   kafka_2:
     depends_on:
@@ -39,9 +41,8 @@ services:
     container_name: "kafka-2"
     network_mode: host
     volumes:
-      - './certs/kafka.keystore.pem:/opt/bitnami/kafka/config/certs/kafka.keystore.pem:ro'
-      - './certs/kafka.keystore.key:/opt/bitnami/kafka/config/certs/kafka.keystore.key:ro'
-      - './certs/kafka.truststore.pem:/opt/bitnami/kafka/config/certs/kafka.truststore.pem:ro'    
+      - './certs/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './certs/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'    
     environment:
       BROKER_ID: 1
       PLAINTEXT_PORT: 9192
@@ -50,12 +51,15 @@ services:
       SASL_PLAINTEXT_PORT: 9195
       ADVERTISED_HOSTNAME: localhost
       ZOOKEEPER_CONNECT: "localhost:2181"
-      KAFKA_TLS_TYPE: PEM
+      KAFKA_CLIENT_USERS: alice
+      KAFKA_CLIENT_PASSWORDS: ecila
+      KAFKA_TLS_TYPE: JKS
+      KAFKA_CERTIFICATE_PASSWORD: brodtest1234
       KAFKA_KRAFT_CLUSTER_ID: "p8fFEbKGQ22B6M_Da_vCBw"
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_PROCESS_ROLES: controller,broker
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9192,CONTROLLER://:9193,SASL_SSL://:9194
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9192,SASL_SSL://localhost:9194
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SASL_SSL:SASL_SSL
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@localhost:9093,1@localhost:9193
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9192,SSL://:9193,SASL_SSL://:9194,CONTROLLER://:9196
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9192,SSL://localhost:9193,SASL_SSL://localhost:9194
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_SSL:SASL_SSL
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@localhost:9096,1@localhost:9196
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER

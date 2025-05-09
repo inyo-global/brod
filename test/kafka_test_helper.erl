@@ -119,12 +119,12 @@ prepare_topic({Topic, NumPartitions, NumReplicas}) ->
   ok = brod:start_producer(?TEST_CLIENT_ID, Topic, _ProducerConfig = []).
 
 delete_topic(Name) ->
-  Delete = "/opt/kafka/bin/kafka-topics.sh " ++ maybe_zookeeper() ++
+  Delete = "kafka-topics.sh " ++ maybe_zookeeper() ++
     " --delete --topic ~s",
   exec_in_kafka_container(Delete, [Name]).
 
 create_topic(Name, NumPartitions, NumReplicas) ->
-  Create = "/opt/kafka/bin/kafka-topics.sh " ++ maybe_zookeeper() ++
+  Create = "kafka-topics.sh " ++ maybe_zookeeper() ++
     " --create --partitions ~p --replication-factor ~p"
     " --topic ~s --config min.insync.replicas=1",
   exec_in_kafka_container(Create, [NumPartitions, NumReplicas, Name]).

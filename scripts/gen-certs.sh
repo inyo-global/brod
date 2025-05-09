@@ -1,42 +1,55 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 # Diretórios para armazenar os certificados
 CERTS_DIR="./certs"
-KEYSTORE_DIR="./certs"
-TRUSTSTORE_DIR="./certs"
+KAFKA_KEYSTORE="kafka.keystore.jks"
+KAFKA_TRUSTSTORE="kafka.truststore.jks"
 
-# Nomes dos arquivos
-CA_KEY="ca.key"
-CA_CERT="ca.crt"
-KAFKA_KEY="kafka.keystore.key"
-KAFKA_CERT="kafka.keystore.pem"
-KAFKA_TRUSTSTORE="kafka.truststore.pem"
+HOST="localhost"
+DAYS=3650
+PASS="brodtest1234"
 
-# Criar diretórios
-mkdir -p $CERTS_DIR $KEYSTORE_DIR $TRUSTSTORE_DIR
+# Generate self-signed server and client certificates
+## generate CA
+openssl req -new -x509 -keyout localhost-ca-key.pem -out localhost-ca-crt.pem -days $DAYS -nodes -subj "/C=SE/ST=Stockholm/L=Stockholm/O=brod/OU=test/CN=$HOST"
 
-echo "Generating CA private key..."
-openssl genrsa -out $CERTS_DIR/$CA_KEY 2048
+## generate server certificate request
+openssl req -newkey rsa:2048 -sha256 -keyout localhost-server-key.pem -out server.csr -days $DAYS -nodes -subj "/C=SE/ST=Stockholm/L=Stockholm/O=brod/OU=test/CN=$HOST"
 
-echo "Generating CA certificate CA..."
-openssl req -x509 -new -nodes -key $CERTS_DIR/$CA_KEY -sha256 -days 3650 -out $CERTS_DIR/$CA_CERT -subj "/CN=Kafka-CA"
+## sign server certificate
+openssl x509 -req -CA localhost-ca-crt.pem -CAkey localhost-ca-key.pem -in server.csr -out localhost-server-crt.pem -days $DAYS -CAcreateserial
 
-echo "Generating o Kafka private key..."
-openssl genrsa -out $KEYSTORE_DIR/$KAFKA_KEY 2048
+## generate client certificate request
+openssl req -newkey rsa:2048 -sha256 -keyout localhost-client-key.pem -out client.csr -days $DAYS -nodes -subj "/C=SE/ST=Stockholm/L=Stockholm/O=brod/OU=test/CN=$HOST"
 
-echo "Generating CSR (Certificate Signing Request) for Kafka..."
-openssl req -new -key $KEYSTORE_DIR/$KAFKA_KEY -out $CERTS_DIR/kafka.csr -subj "/CN=Kafka-Broker"
+## sign client certificate
+openssl x509 -req -CA localhost-ca-crt.pem -CAkey localhost-ca-key.pem -in client.csr -out localhost-client-crt.pem -days $DAYS -CAserial localhost-ca-crt.srl
 
-echo "Signing Kafka cert with CA..."
-openssl x509 -req -in $CERTS_DIR/kafka.csr -CA $CERTS_DIR/$CA_CERT -CAkey $CERTS_DIR/$CA_KEY -CAcreateserial -out $KEYSTORE_DIR/$KAFKA_CERT -days 365 -sha256
+# Convert self-signed certificate to PKCS#12 format
+openssl pkcs12 -export -name $HOST -in localhost-server-crt.pem -inkey localhost-server-key.pem -out server.p12 -CAfile localhost-ca-crt.pem -passout pass:$PASS
+
+# Import PKCS#12 into a java keystore
+echo $PASS | keytool -importkeystore -destkeystore server.jks -srckeystore server.p12 -srcstoretype pkcs12 -alias $HOST -storepass $PASS
+
+# Import CA into java truststore
+keytool -noprompt -keystore truststore.jks -alias localhost -import -file localhost-ca-crt.pem -storepass $PASS
 
 echo "Copying CA para o truststore..."
-cp $CERTS_DIR/$CA_CERT $TRUSTSTORE_DIR/$KAFKA_TRUSTSTORE
+cp server.jks $CERTS_DIR/$KAFKA_KEYSTORE
+cp truststore.jks $CERTS_DIR/$KAFKA_TRUSTSTORE
+cp localhost-ca-crt.pem $CERTS_DIR/ca.pem
+cp localhost-client-key.pem $CERTS_DIR/client.key
+cp localhost-client-crt.pem  $CERTS_DIR/client.pem
 
-echo "Certificados gerados com sucesso!"
-echo "Arquivos:"
-echo "  - Keystore Key: $KEYSTORE_DIR/$KAFKA_KEY"
-echo "  - Keystore Cert: $KEYSTORE_DIR/$KAFKA_CERT"
-echo "  - Truststore Cert: $TRUSTSTORE_DIR/$KAFKA_TRUSTSTORE"
-
-rm  certs/ca.key certs/ca.crt certs/ca.srl certs/kafka.csr
+rm localhost-ca-crt.pem \
+   localhost-ca-crt.srl \
+   localhost-ca-key.pem \
+   localhost-client-crt.pem \
+   localhost-client-key.pem \
+   localhost-server-crt.pem \
+   localhost-server-key.pem \
+   server.csr \
+   server.jks \
+   server.p12 \
+   truststore.jks \
+   client.csr
