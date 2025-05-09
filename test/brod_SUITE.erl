@@ -60,6 +60,7 @@ all() -> [F || {F, _A} <- module_info(exports),
 %%%_* Test functions ===========================================================
 
 t_create_delete_topics(Config) when is_list(Config) ->
+  {ok, _Pid} = brod_kafka_apis:start_link(),
   Topic = iolist_to_binary(["test-topic-", integer_to_list(erlang:system_time())]),
   TopicConfig = [
     #{
@@ -80,6 +81,7 @@ t_create_delete_topics(Config) when is_list(Config) ->
   end.
 
 t_delete_topics_not_found(Config) when is_list(Config) ->
+  {ok, _Pid} = brod_kafka_apis:start_link(),
   ?assertEqual({error, unknown_topic_or_partition},
     brod:delete_topics(?HOSTS, [<<"no-such-topic">>], ?TIMEOUT,
       #{connect_timeout => ?TIMEOUT})).
