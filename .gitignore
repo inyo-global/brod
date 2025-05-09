@@ -27,3 +27,4 @@ TAGS
 .vscode/
 test/data/ssl/*.pem
 /rebar.lock
+.DS_Store
