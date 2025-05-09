@@ -1,1 +1,0 @@
-1. Update rebar pc plugin to version 1.15 to fix compiling using otp 27+ https://elixirforum.com/t/compile-error-in-syslog-since-upgrading-to-erlang-27/66606/3
