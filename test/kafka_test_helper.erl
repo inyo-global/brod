@@ -90,7 +90,7 @@ client_config() ->
 
 maybe_zookeeper() ->
   case kafka_version() of
-    {3, _} ->
+    {Major, _} when Major > 2 ->
       %% Kafka 2.2 started supporting --bootstap-server, but 2.x still supports --zookeeper
       %% Starting from 3.0, --zookeeper is no longer supported, must use --bootstrap-server
       "--bootstrap-server localhost:9092";

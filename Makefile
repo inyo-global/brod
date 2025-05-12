@@ -1,4 +1,4 @@
-KAFKA_VERSION ?= 3.6.0
+KAFKA_VERSION ?= 4.0.0
 export KAFKA_VERSION
 all: compile
 
