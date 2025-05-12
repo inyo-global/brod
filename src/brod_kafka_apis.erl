@@ -140,20 +140,20 @@ lookup_vsn_range(Conn, API) ->
 supported_versions(API) ->
   case API of
     produce          -> {0, 7};
-    fetch            -> {0, 10};
+    fetch            -> {4, 10};
     list_offsets     -> {0, 2};
     metadata         -> {0, 2};
     offset_commit    -> {2, 2};
     offset_fetch     -> {1, 2};
     find_coordinator -> {0, 0};
-    join_group       -> {0, 1};
+    join_group       -> {0, 2};
     heartbeat        -> {0, 0};
     leave_group      -> {0, 0};
     sync_group       -> {0, 0};
     describe_groups  -> {0, 0};
     list_groups      -> {0, 0};
-    create_topics    -> {0, 6};
-    delete_topics    -> {0, 6};
+    create_topics    -> {0, 2};
+    delete_topics    -> {0, 2};
     _                -> erlang:error({unsupported_api, API})
   end.
 

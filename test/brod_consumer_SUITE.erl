@@ -175,11 +175,12 @@ t_drop_aborted(kafka_version_match) ->
   has_txn();
 t_drop_aborted(Config) when is_list(Config) ->
   test_drop_aborted(Config, true),
-  test_drop_aborted(Config, false).
+  test_drop_aborted(Config, not has_api_0_support()).
 
 %% When QueryApiVsn is set to false,
 %% brod will use lowest supported API version.
-%% This is to test fethcing transactional messages using old version API
+%% This is to test fethcing transactional messages using old version API.
+%% Kafka 4.0.0+ does not allow fetching aborted messages using old version API.
 test_drop_aborted(Config, QueryApiVsn) ->
   Client = ?config(client),
   Topic = ?TOPIC,
@@ -979,6 +980,13 @@ has_txn() ->
       true
   end.
 
+has_api_0_support() ->
+  case kafka_test_helper:kafka_version() of
+    {Major, _} when Major > 3 ->
+      false;
+    _ ->
+      true
+  end.
 %%%_* Emacs ====================================================================
 %%% Local Variables:
 %%% allout-layout: t

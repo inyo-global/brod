@@ -102,8 +102,8 @@ kafka_version() ->
   VsnStr = os:getenv("KAFKA_VERSION"),
   case VsnStr =:= "" orelse VsnStr =:= false of
     true ->
-      ct:pal("KAFKA_VERSION is not set, defaulting to 3.6", []),
-      {3, 6};
+      ct:pal("KAFKA_VERSION is not set, defaulting to 4.0", []),
+      {4, 0};
     false ->
       [Major, Minor | _] = string:tokens(VsnStr, "."),
       {list_to_integer(Major), list_to_integer(Minor)}
