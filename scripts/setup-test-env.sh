@@ -66,18 +66,11 @@ else
   MAYBE_ZOOKEEPER="--zookeeper localhost:2181"
 fi
 
-if [[ "$KAFKA_VERSION" == 3* ]] || [[ "$KAFKA_VERSION" == 4* ]]; then
-  TOPIC_CMD="kafka-topics.sh"
-  CONSUMER_GROUP_CMD="kafka-consumer-groups.sh" 
-  KAFKA_CONFIG_CMD="kafka-configs.sh"
-else
-  TOPIC_CMD="/opt/kafka/bin/kafka-topics.sh"
-  CONSUMER_GROUP_CMD="/opt/kafka/bin/kafka-consumer-groups.sh" 
-  KAFKA_CONFIG_CMD="/opt/kafka/bin/kafka-configs.sh"
-fi
-
+TOPIC_CMD="kafka-topics.sh"
+CONSUMER_GROUP_CMD="kafka-consumer-groups.sh" 
+KAFKA_CONFIG_CMD="kafka-configs.sh"
 TOPIC_LIST_CMD="$TOPIC_CMD $MAYBE_ZOOKEEPER --list"
-MAX_WAIT_SEC=20
+MAX_WAIT_SEC=30
 
 function wait_for_kafka {
   echo "Waiting for $1 to start..."
@@ -148,6 +141,7 @@ if [[ "$KAFKA_VERSION" = 2* ]] || [[ "$KAFKA_VERSION" = 3* ]] || [[ "$KAFKA_VERS
 else
   MAYBE_NEW_CONSUMER="--new-consumer"
 fi
+
 # this is to warm-up kafka group coordinator for deterministic in tests
 docker exec kafka-1 $CONSUMER_GROUP_CMD --bootstrap-server localhost:9092 $MAYBE_NEW_CONSUMER --group test-group --describe > /dev/null 2>&1
 
