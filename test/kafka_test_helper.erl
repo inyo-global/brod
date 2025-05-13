@@ -3,6 +3,7 @@
 -export([ init_per_suite/1
         , common_init_per_testcase/3
         , common_end_per_testcase/2
+        , delete_consumer_group/1
         , produce/2
         , produce/3
         , produce/4
@@ -102,8 +103,8 @@ kafka_version() ->
   VsnStr = os:getenv("KAFKA_VERSION"),
   case VsnStr =:= "" orelse VsnStr =:= false of
     true ->
-      ct:pal("KAFKA_VERSION is not set, defaulting to 4.0", []),
-      {4, 0};
+      ct:pal("KAFKA_VERSION is not set, defaulting to 3.6", []),
+      {3, 6};
     false ->
       [Major, Minor | _] = string:tokens(VsnStr, "."),
       {list_to_integer(Major), list_to_integer(Minor)}
@@ -128,6 +129,11 @@ create_topic(Name, NumPartitions, NumReplicas) ->
     " --create --partitions ~p --replication-factor ~p"
     " --topic ~s --config min.insync.replicas=1",
   exec_in_kafka_container(Create, [NumPartitions, NumReplicas, Name]).
+
+delete_consumer_group(ConsumerGroup) ->
+  Cmd = "kafka-consumer-groups.sh " ++ maybe_zookeeper() ++
+    " --delete --group ~s",
+  exec_in_kafka_container(Cmd, [ConsumerGroup]).
 
 exec_in_kafka_container(FMT, Args) ->
   CMD0 = lists:flatten(io_lib:format(FMT, Args)),

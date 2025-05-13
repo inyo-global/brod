@@ -114,7 +114,8 @@ end_per_group(_Group, _Config) ->
   ok.
 
 common_init_per_testcase(Case, Config0) ->
-  Config = kafka_test_helper:common_init_per_testcase(?MODULE, Case, Config0),
+  % kafka_test_helper:delete_consumer_group(?group_id(Case, 1)),
+  Config = kafka_test_helper:common_init_per_testcase(?MODULE, Case, Config0),  
   BootstrapHosts = bootstrap_hosts(),
   ClientConfig   = client_config(),
   ok = brod:start_client(BootstrapHosts, ?CLIENT_ID, ClientConfig),
