@@ -29,11 +29,11 @@ case $KAFKA_VERSION in
   0.9*)
     KAFKA_VERSION="0.9";;
   0.10*)
-    KAFKA_VERSION="0.10";;
+    KAFKA_VERSION="0.10.2.1";;
   0.11*)
-    KAFKA_VERSION="0.11";;
+    KAFKA_VERSION="0.11.0-1-r1";;
   1.*)
-    KAFKA_VERSION="1.1";;
+    KAFKA_VERSION="1.1.0";;
   2.*)
     KAFKA_VERSION="2.8";;
   3.*)
