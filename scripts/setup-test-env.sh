@@ -87,7 +87,7 @@ function wait_for_kafka {
     else
       echo "Trying net stat for $which_kafka on $port"
       netstat -tnlp
-      docker logs --until=1s $which_kafka-1
+      docker logs --until=1s $which_kafka
       listener="$(netstat -tnlp 2>&1 | grep $port || true)"
     fi    
     if [ "$listener" != '' ]; then
