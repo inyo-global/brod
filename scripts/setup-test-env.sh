@@ -70,7 +70,7 @@ TOPIC_CMD="kafka-topics.sh"
 CONSUMER_GROUP_CMD="kafka-consumer-groups.sh" 
 KAFKA_CONFIG_CMD="kafka-configs.sh"
 TOPIC_LIST_CMD="$TOPIC_CMD $MAYBE_ZOOKEEPER --list"
-MAX_WAIT_SEC=30
+MAX_WAIT_SEC=300
 
 function wait_for_kafka {
   echo "Waiting for $1 to start..."
