@@ -105,8 +105,9 @@ terminate(_Reason, _State) ->
 
 -spec do_pick_version(conn(), api(), range()) -> vsn().
 do_pick_version(_Conn, _API, {V, V}) -> V;
-%% Versions 0-2 were removed in Apache Kafka 4.0, version 3 is the new baseline. Due to a bug in librdkafka,
-%% version `0` has to be included in the api versions response (see KAFKA-18659). 
+%% Versions 0-2 were removed in Apache Kafka 4.0, version 3 is the new baseline.
+%% Due to a bug in librdkafka, version `0` has to be included in the api versions
+%% (see KAFKA-18659).
 do_pick_version(Conn, produce, {Min, Max} = MyRange) ->
   case lookup_vsn_range(Conn, produce) of
     none ->

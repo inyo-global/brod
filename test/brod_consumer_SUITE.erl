@@ -175,7 +175,7 @@ t_drop_aborted(kafka_version_match) ->
   has_txn();
 t_drop_aborted(Config) when is_list(Config) ->
   test_drop_aborted(Config, true),
-  test_drop_aborted(Config, not has_api_0_support()).
+  test_drop_aborted(Config, not kafka_test_helper:has_api_0_support()).
 
 %% When QueryApiVsn is set to false,
 %% brod will use lowest supported API version.
@@ -980,13 +980,6 @@ has_txn() ->
       true
   end.
 
-has_api_0_support() ->
-  case kafka_test_helper:kafka_version() of
-    {Major, _} when Major > 3 ->
-      false;
-    _ ->
-      true
-  end.
 %%%_* Emacs ====================================================================
 %%% Local Variables:
 %%% allout-layout: t

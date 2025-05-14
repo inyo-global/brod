@@ -425,6 +425,10 @@ t_produce_buffered_offset(Config) when is_list(Config) ->
   ReceiveFun(OP2, K2, V2).
 
 t_configure_produce_api_vsn({init, Config}) ->
+  t_configure_produce_api_vsn({kafka_test_helper:has_api_0_support(), Config});
+t_configure_produce_api_vsn({false, _Config}) ->
+  {skip, "Kafka version does not support produce API v0"};
+t_configure_produce_api_vsn({true, Config}) ->
   Client = t_configure_produce_api_vsn,
   Topic = ?TOPIC,
   case whereis(Client) of

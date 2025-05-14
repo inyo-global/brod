@@ -19,6 +19,7 @@
         , bootstrap_hosts/0
         , kill_process/2
         , kafka_version/0
+        , has_api_0_support/0
         ]).
 
 -include("brod_test_macros.hrl").
@@ -103,11 +104,19 @@ kafka_version() ->
   VsnStr = os:getenv("KAFKA_VERSION"),
   case VsnStr =:= "" orelse VsnStr =:= false of
     true ->
-      ct:pal("KAFKA_VERSION is not set, defaulting to 3.6", []),
-      {3, 6};
+      ct:pal("KAFKA_VERSION is not set, defaulting to 4.0", []),
+      {4, 0};
     false ->
       [Major, Minor | _] = string:tokens(VsnStr, "."),
       {list_to_integer(Major), list_to_integer(Minor)}
+  end.
+
+has_api_0_support() ->
+  case kafka_test_helper:kafka_version() of
+    {Major, _} when Major > 3 ->
+      false;
+    _ ->
+      true
   end.
 
 prepare_topic(Topic) when is_binary(Topic) ->
