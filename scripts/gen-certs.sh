@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 # Diretórios para armazenar os certificados
-CERTS_DIR="./certs"
+CERTS_DIR="./scripts/certs"
 KAFKA_KEYSTORE="kafka.keystore.jks"
 KAFKA_TRUSTSTORE="kafka.truststore.jks"
 
