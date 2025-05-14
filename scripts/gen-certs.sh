@@ -52,4 +52,4 @@ rm localhost-ca-crt.pem \
    server.jks \
    server.p12 \
    truststore.jks \
-   client.csr
+   client.csr || true
