@@ -43,18 +43,16 @@ case $KAFKA_VERSION in
 esac
 
 
-if [[ "$KAFKA_VERSION" == 3* ]] || [[ "$KAFKA_VERSION" == 4* ]]; then
-  export KAFKA_IMAGE="bitnami/kafka:${KAFKA_VERSION}"
-  export KAFKA_IMAGE_VERSION="1.1-3.6" # Just to start the zookeeper
-else
+if [[ "$KAFKA_VERSION" == 0.9* ]]; then
   export KAFKA_IMAGE_VERSION="1.1-${KAFKA_VERSION}"
   echo "env KAFKA_IMAGE_VERSION=$KAFKA_IMAGE_VERSION"
   export KAFKA_IMAGE="zmstone/kafka:${KAFKA_IMAGE_VERSION}"
+else
+  export KAFKA_IMAGE="bitnami/kafka:${KAFKA_VERSION}"
+  export KAFKA_IMAGE_VERSION="1.1-3.6" # Just to start the zookeeper
 fi
 
 echo "env KAFKA_IMAGE=$KAFKA_IMAGE"
-
-
 TD="$(cd "$(dirname "$0")" && pwd)"
 
 docker_compose -f $TD/docker-compose.yml down || true
@@ -85,9 +83,6 @@ function wait_for_kafka {
     if [ "$(uname)" == "Darwin" ]; then
       listener="$(lsof -iTCP$port -sTCP:LISTEN -n -P 2>&1 || true)"
     else
-      echo "Trying net stat for $which_kafka on $port"
-      netstat -tnlp
-      docker logs --until=1s $which_kafka
       listener="$(netstat -tnlp 2>&1 | grep $port || true)"
     fi    
     if [ "$listener" != '' ]; then
