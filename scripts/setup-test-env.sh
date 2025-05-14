@@ -4,8 +4,6 @@ if [ -n "${DEBUG:-}" ]; then
     set -x
 fi
 
-sh gen-certs.sh
-
 docker ps > /dev/null || {
     echo "You must be a member of docker group to run this script"
     exit 1

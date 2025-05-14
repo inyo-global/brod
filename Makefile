@@ -9,6 +9,7 @@ lint:
 	@rebar3 lint
 
 test-env:
+	@./scripts/sh gen-certs.sh
 	@./scripts/setup-test-env.sh
 	@mkdir -p ./test/data/ssl
 	@cp ./scripts/certs/ca.pem ./test/data/ssl/ca.pem
