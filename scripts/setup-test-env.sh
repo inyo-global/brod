@@ -85,6 +85,8 @@ function wait_for_kafka {
     if [ "$(uname)" == "Darwin" ]; then
       listener="$(lsof -iTCP$port -sTCP:LISTEN -n -P 2>&1 || true)"
     else
+      echo "Trying net stat for $which_kafka on $port"
+      netstat -tnlp
       listener="$(netstat -tnlp 2>&1 | grep $port || true)"
     fi    
     if [ "$listener" != '' ]; then
